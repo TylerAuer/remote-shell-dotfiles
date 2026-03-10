@@ -10,19 +10,6 @@ function is_installed() {
   fi
 }
 
-function cd_via_fzf() {
-  if [ -z "$1" ]; then
-    echo "Error: Please provide a directory path"
-    return 1
-  fi
-  local dir="$1"
-  dest=$(ls "$dir" | fzf)
-  if [ -z "$dest" ]; then
-    return 1
-  fi
-  cd "$dir/$dest"
-}
-
 function are_you_sure() {
   if [ -n "$1" ]; then
     read -q "REPLY?$1 (y/n) "
@@ -236,3 +223,10 @@ alias b="switch"
 alias wtn="new_worktree"
 alias wtd="delete_worktree"
 alias filediff="files_touched_by_current_branch"
+
+# Git aliases (invoked as `git s`, `git b`, etc.)
+git config --global alias.s status
+git config --global alias.b branch
+git config --global alias.d diff
+git config --global alias.c commit
+git config --global alias.cob "checkout -b"
