@@ -225,6 +225,7 @@ alias b="switch"
 alias wtn="new_worktree"
 alias wtd="delete_worktree"
 alias filediff="files_touched_by_current_branch"
+alias yolo="claude --dangerously-skip-permissions"
 
 # Git aliases (invoked as `git s`, `git b`, etc.)
 git config --global alias.s status
