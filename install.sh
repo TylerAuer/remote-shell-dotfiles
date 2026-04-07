@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Running Tyler's custom dotfiles installer..."
+
 # Git branch names to consider as the main branch
 MAIN_BRANCH_NAMES=("main" "master" "trunk")
 
