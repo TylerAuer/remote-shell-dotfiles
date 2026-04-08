@@ -13,5 +13,7 @@ if ! grep -qF "$SOURCE_LINE" "$HOME/.zshrc" 2>/dev/null; then
   echo "# Tyler's dotfiles" >> "$HOME/.zshrc"
   echo "$SOURCE_LINE" >> "$HOME/.zshrc"
   echo "Added dotfiles source line to ~/.zshrc"
+else
+  echo "Source line already present in ~/.zshrc"
 fi
 

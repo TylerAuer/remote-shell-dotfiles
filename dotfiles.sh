@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -eu
-
 echo "Running Tyler's custom dotfiles installer..."
 
 # Git branch names to consider as the main branch
@@ -237,3 +235,5 @@ git config --global alias.b branch
 git config --global alias.d diff
 git config --global alias.c commit
 git config --global alias.cob "checkout -b"
+
+echo "Finished Tyler's custom dotfiles installer..."
