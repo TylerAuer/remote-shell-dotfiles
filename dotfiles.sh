@@ -4,7 +4,8 @@ echo "Running Tyler's custom dotfiles installer..."
 
 # Git branch names to consider as the main branch
 MAIN_BRANCH_NAMES=("main" "master" "trunk")
-OH_MY_POSH_CONFIG=~/.oh-my-posh.json
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+OH_MY_POSH_CONFIG=$DOTFILES_DIR/.oh-my-posh.json
 
 
 function is_installed() {
