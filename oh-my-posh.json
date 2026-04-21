@@ -1,0 +1,94 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "console_title_template": "{{ .Folder }}",
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "template": "\n",
+          "type": "text",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "style": "full"
+          },
+          "foreground": "white",
+          "templates_logic": "join",
+          "background": "transparent",
+          "type": "path",
+          "style": "plain",
+          "templates": [
+            "{{ if not .Segments.Git.RepoName }}{{ .Path }}{{ end }}",
+            "{{ if .Segments.Git.RepoName }}<cyan><b>{{ .Segments.Git.RepoName }}</b></><d>{{ index (splitList (.Segments.Git.RepoName) .Path) 1 }}</d>{{ end }}"
+          ]
+        },
+        {
+          "properties": {
+            "branch_icon": "",
+            "commit_icon": "@",
+            "fetch_status": true
+          },
+          "foreground": "magenta",
+          "templates_logic": "join",
+          "background": "transparent",
+          "type": "git",
+          "style": "plain",
+          "templates": [
+            "{{ if .Rebase }}<red> Rebase~</>{{ end }}",
+            "{{ if or (.Working.Changed) (.Staging.Changed) }} {{ .HEAD }}{{ end }}",
+            "{{ if and (not .Working.Changed) (not .Staging.Changed) }}<green> {{ .HEAD }}</>{{ end }}",
+            "{{ if gt .StashCount 0 }} *{{ .StashCount }}{{ end }}",
+            "{{ if or (gt .Ahead 0) (gt .Behind 0) }} {{ if gt .Behind 0 }}↓{{ .Behind }}{{ end }}{{ if gt .Ahead 0 }}↑{{ .Ahead }}{{ end }}{{ end }}"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "overflow": "hide",
+      "segments": [
+        {
+          "template": "{{if gt .Code 0}}✗ {{end}}",
+          "foreground": "red",
+          "background": "transparent",
+          "type": "text",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "threshold": 0
+          },
+          "template": "<d>{{ .FormattedMs }}</d>",
+          "foreground": "white",
+          "background": "transparent",
+          "type": "executiontime",
+          "style": "plain"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "template": "❯",
+          "foreground": "magenta",
+          "background": "transparent",
+          "type": "text",
+          "style": "plain"
+        }
+      ]
+    }
+  ],
+  "secondary_prompt": {
+    "template": "❯❯ ",
+    "foreground": "magenta",
+    "background": "transparent"
+  }
+}

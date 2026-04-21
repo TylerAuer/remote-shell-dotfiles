@@ -4,6 +4,8 @@ echo "Running Tyler's custom dotfiles installer..."
 
 # Git branch names to consider as the main branch
 MAIN_BRANCH_NAMES=("main" "master" "trunk")
+OH_MY_POSH_CONFIG=~/.oh-my-posh.json
+
 
 function is_installed() {
   if command -v "$1" &> /dev/null; then
@@ -203,6 +205,17 @@ function delete_all_branches_but_main() {
     git branch "$force_flag" "$branch"
   done
 }
+
+####################################################################################################
+## Dependencies ####################################################################################
+####################################################################################################
+
+if ! is_installed "oh-my-posh"; then
+  echo "Installing oh-my-posh"
+  curl -s https://ohmyposh.dev/install.sh | bash -s
+fi
+echo "Initializng oh-my-posh"
+eval "$(oh-my-posh init zsh --config $OH_MY_POSH_CONFIG)"
 
 ####################################################################################################
 ## Aliases #########################################################################################
