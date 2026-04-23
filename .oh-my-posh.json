@@ -14,6 +14,12 @@
           "style": "plain"
         },
         {
+          "template": "{{ if .Env.CODER_WORKSPACE_NAME }}<green>({{ .Env.CODER_WORKSPACE_NAME }})</> {{ end }}",
+          "background": "transparent",
+          "type": "text",
+          "style": "plain"
+        },
+        {
           "properties": {
             "style": "full"
           },
