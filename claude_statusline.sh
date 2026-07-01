@@ -19,6 +19,20 @@ color_pct() {
   fi
 }
 
+# Color the context-usage group by absolute token count: yellow once we cross
+# 100k tokens, red at 200k+. (Token thresholds so they trigger consistently on
+# large windows, e.g. the 1M-token context.)
+color_ctx() {
+  local pct=$1 tokens=$2 text=$3
+  if (( tokens >= 200000 )); then
+    printf '\e[91m%s\e[0m' "$text"
+  elif (( tokens >= 100000 )); then
+    printf '\e[93m%s\e[0m' "$text"
+  else
+    printf '%s' "$text"
+  fi
+}
+
 # Format time-until-reset from a Unix epoch timestamp (seconds).
 # Returns "Xd Yh", "Xh Ym", or "Xm" depending on magnitude.
 format_until() {
@@ -40,20 +54,17 @@ format_until() {
   fi
 }
 
-# Context window %
+# Context window % and token count (rounded to nearest 1k)
 CTX_PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
+CTX_TOKENS_RAW=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
+CTX_TOKENS="$(( (CTX_TOKENS_RAW + 500) / 1000 ))k"
 
 # Rate limits (absent when not Pro/Max or before first API call)
 FIVE_H=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 SEVEN_D=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 
 # Effort level from settings (not in JSON)
-EFFORT_RAW=$(jq -r '.effortLevel // "medium"' ~/.claude/settings.json 2>/dev/null)
-case "$EFFORT_RAW" in
-  low)    EFFORT_SYM="○" ;;
-  high)   EFFORT_SYM="●" ;;
-  *)      EFFORT_SYM="◐" ;;  # medium or auto
-esac
+EFFORT=$(jq -r '.effortLevel // "medium"' ~/.claude/settings.json 2>/dev/null)
 
 # Determine working directory
 CWD=$(echo "$input" | jq -r '.cwd // empty')
@@ -91,7 +102,7 @@ if [[ -n "$REPO_ROOT" ]]; then
 fi
 
 # Line 1: [model effort] project [worktree] [branch] [#PR]
-LINE1="[${MODEL} ${EFFORT_SYM}] ${PROJECT}"
+LINE1="[${MODEL} ${EFFORT}] ${PROJECT}"
 [[ -n "$WORKTREE_NAME" ]] && LINE1="${LINE1} ${WORKTREE_NAME}"
 [[ -n "$BRANCH" ]] && LINE1="${LINE1} ${BRANCH}"
 [[ -n "$PR_STR" ]] && LINE1="${LINE1} ${PR_STR}"
@@ -104,7 +115,7 @@ LINES_ADDED=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
 LINES_REMOVED=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 LINES_STR=$(printf '\e[32m+%s\e[0m \e[31m-%s\e[0m' "$LINES_ADDED" "$LINES_REMOVED")
 
-LINE2="${DURATION_MIN}m $(color_pct "$CTX_PCT") ${LINES_STR}"
+LINE2="$(color_ctx "$CTX_PCT" "$CTX_TOKENS_RAW" "${CTX_PCT}% (${CTX_TOKENS})") | ${DURATION_MIN}m ${LINES_STR}"
 
 if [[ -n "$FIVE_H" ]]; then
   FH_PCT=$(printf '%.0f' "$FIVE_H")
