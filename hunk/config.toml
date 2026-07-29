@@ -1,0 +1,11 @@
+# Hunk — review-first terminal diff viewer (https://github.com/modem-dev/hunk)
+#
+# install-hunk.sh copies this to ~/.config/hunk/config.toml only when that file
+# does not exist yet. Hunk writes its own view preferences back to that file on
+# quit, so re-running the installer never clobbers in-app tweaks.
+
+theme = "one-dark-pro" # Atom One Dark Pro; press `t` in-app to browse others
+mode = "auto"          # auto | split | stack
+line_numbers = true
+wrap_lines = false
+agent_notes = true     # show inline agent/AI annotations beside the diff

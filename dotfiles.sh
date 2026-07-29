@@ -8,6 +8,15 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 OH_MY_POSH_CONFIG=$DOTFILES_DIR/.oh-my-posh.json
 
 
+####################################################################################################
+## PATH ############################################################################################
+####################################################################################################
+
+# Where install-hunk.sh puts prebuilt binaries when brew/npm are unavailable
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 function is_installed() {
   if command -v "$1" &> /dev/null; then
     return 0
@@ -218,6 +227,18 @@ fi
 echo "Initializng oh-my-posh"
 eval "$(oh-my-posh init zsh --config $OH_MY_POSH_CONFIG)"
 
+# hunk (terminal diff viewer). Only the cheap install paths run here so a fresh
+# shell never blocks on the ~45MB prebuilt download — install.sh handles that.
+if ! command -v hunk &>/dev/null; then
+  if command -v brew &>/dev/null || command -v npm &>/dev/null; then
+    echo "Installing hunk"
+    "$DOTFILES_DIR/install-hunk.sh" --cheap-only
+    hash -r 2>/dev/null
+  else
+    echo "hunk is not installed. Run $DOTFILES_DIR/install.sh to install it."
+  fi
+fi
+
 ####################################################################################################
 ## Aliases #########################################################################################
 ####################################################################################################
@@ -249,5 +270,11 @@ git config --global alias.b branch
 git config --global alias.d diff
 git config --global alias.c commit
 git config --global alias.cob "checkout -b"
+
+# Route git's pager through hunk when it is available (git only pages on a TTY,
+# so scripts and pipes are unaffected)
+if command -v hunk &>/dev/null; then
+  git config --global core.pager "hunk pager"
+fi
 
 echo "Finished Tyler's custom dotfiles installer..."

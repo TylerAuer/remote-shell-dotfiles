@@ -30,6 +30,15 @@ cp "$DOTFILES_DIR/claude_statusline.sh" "$STATUSLINE_SCRIPT"
 echo "Installed claude_statusline.sh to $CLAUDE_DIR/"
 
 ####################################################################################################
+## Install hunk ####################################################################################
+####################################################################################################
+
+# Installs/upgrades hunk, seeds ~/.config/hunk/config.toml, and installs hunk's
+# own review skill into ~/.claude/skills. Non-fatal: a box without hunk still
+# gets the rest of the dotfiles.
+"$DOTFILES_DIR/install-hunk.sh" || echo "hunk install failed — continuing" >&2
+
+####################################################################################################
 ## Install Claude skills ###########################################################################
 ####################################################################################################
 
