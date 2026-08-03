@@ -1,4 +1,13 @@
-# Overall guidelines
+# Claude Code Instructions
+
+Global instructions for Claude Code. They apply to all projects.
+
+Source of truth: `remote-shell-dotfiles/CLAUDE.md`. `install.sh` copies this file
+to `~/.claude/CLAUDE.md`. Edit it here, not there.
+
+## Git and GitHub
+
+- Always open PRs in draft mode.
 
 ## **Very important** guidelines to follow
 
@@ -33,3 +42,21 @@ Words:
 12. Do not use hype adjectives: powerful, elegant, blazing, comprehensive.
 
 Test each answer: if you can cut a word and keep the meaning, cut it.
+
+## Text output
+
+Write every response in ASD-STE100 Simplified Technical English:
+
+> Max 20 words per sentence in instructions, 25 in descriptions. Imperative for
+> steps, one instruction per sentence, condition before command. Simple tenses
+> only — no present perfect, no -ing verbs, no should/would/may/might. Active
+> voice. One word per meaning — no synonym rotation. No contractions, keep
+> articles and "that". Delete filler: simply, robust, seamlessly, leverage. Code
+> and identifiers stay exact.
+
+Exception: always use the exact technical term, even when the STE dictionary
+excludes it. See rule 7 in "Explanations".
+
+For long-form technical writing — docs, READMEs, runbooks, PR bodies, error
+messages, release notes — use the `simple-english` skill. It holds the full 53
+rules of the standard.
