@@ -26,7 +26,11 @@ function is_installed() {
   fi
 }
 
-function are_you_sure() {
+# Named `confirm`, not `are_you_sure`: the Nextdoor work profile
+# (src/dotfiles/profile.sh) defines its own `are_you_sure` that guards
+# destructive commands and needs a typed "Yes". This file loads later, so
+# reusing that name replaced the work guard with a single-keypress prompt.
+function confirm() {
   if [ -n "$1" ]; then
     read -q "REPLY?$1 (y/n) "
   else
