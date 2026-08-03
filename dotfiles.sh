@@ -4,8 +4,8 @@ echo "Running Tyler's custom dotfiles installer..."
 
 # Git branch names to consider as the main branch
 MAIN_BRANCH_NAMES=("main" "master" "trunk")
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
-OH_MY_POSH_CONFIG=$DOTFILES_DIR/.oh-my-posh.json
+PERSONAL_DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+OH_MY_POSH_CONFIG=$PERSONAL_DOTFILES_DIR/.oh-my-posh.json
 
 
 ####################################################################################################
@@ -232,10 +232,10 @@ eval "$(oh-my-posh init zsh --config $OH_MY_POSH_CONFIG)"
 if ! command -v hunk &>/dev/null; then
   if command -v brew &>/dev/null || command -v npm &>/dev/null; then
     echo "Installing hunk"
-    "$DOTFILES_DIR/install-hunk.sh" --cheap-only
+    "$PERSONAL_DOTFILES_DIR/install-hunk.sh" --cheap-only
     hash -r 2>/dev/null
   else
-    echo "hunk is not installed. Run $DOTFILES_DIR/install.sh to install it."
+    echo "hunk is not installed. Run $PERSONAL_DOTFILES_DIR/install.sh to install it."
   fi
 fi
 

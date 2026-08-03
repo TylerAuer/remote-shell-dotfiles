@@ -14,7 +14,7 @@ if [[ ${1:-} == "--cheap-only" ]]; then
   CHEAP_ONLY=true
 fi
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+PERSONAL_DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 REPO="modem-dev/hunk"
 LOCAL_BIN="$HOME/.local/bin"
 HUNK_LIBEXEC="$HOME/.local/share/hunk"
@@ -150,7 +150,7 @@ function install_hunk_config() {
   if [[ -f $target ]]; then
     echo "hunk config already exists at $target — leaving it alone"
   else
-    cp "$DOTFILES_DIR/hunk/config.toml" "$target"
+    cp "$PERSONAL_DOTFILES_DIR/hunk/config.toml" "$target"
     echo "Installed hunk config to $target"
   fi
 }
@@ -194,7 +194,7 @@ done
 
 if [[ $installed == false ]]; then
   if [[ $CHEAP_ONLY == true ]]; then
-    echo "hunk is not installed — run $DOTFILES_DIR/install.sh to install it" >&2
+    echo "hunk is not installed — run $PERSONAL_DOTFILES_DIR/install.sh to install it" >&2
   else
     echo "Failed to install hunk by any method" >&2
   fi

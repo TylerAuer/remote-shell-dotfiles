@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+PERSONAL_DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 CLAUDE_DIR="$HOME/.claude"
 STATUSLINE_SCRIPT="$CLAUDE_DIR/claude_statusline.sh"
 SETTINGS_FILE="$CLAUDE_DIR/settings.json"
@@ -9,7 +9,7 @@ SETTINGS_FILE="$CLAUDE_DIR/settings.json"
 ## Source dotfiles in shell RC file ################################################################
 ####################################################################################################
 
-SOURCE_LINE="source \"$DOTFILES_DIR/dotfiles.sh\""
+SOURCE_LINE="source \"$PERSONAL_DOTFILES_DIR/dotfiles.sh\""
 
 # Add source line to .zshrc if not already present
 if ! grep -qF "$SOURCE_LINE" "$HOME/.zshrc" 2>/dev/null; then
@@ -26,7 +26,7 @@ fi
 ####################################################################################################
 
 mkdir -p "$CLAUDE_DIR"
-cp "$DOTFILES_DIR/claude_statusline.sh" "$STATUSLINE_SCRIPT"
+cp "$PERSONAL_DOTFILES_DIR/claude_statusline.sh" "$STATUSLINE_SCRIPT"
 echo "Installed claude_statusline.sh to $CLAUDE_DIR/"
 
 ####################################################################################################
@@ -36,7 +36,7 @@ echo "Installed claude_statusline.sh to $CLAUDE_DIR/"
 # Installs/upgrades hunk, seeds ~/.config/hunk/config.toml, and installs hunk's
 # own review skill into ~/.claude/skills. Non-fatal: a box without hunk still
 # gets the rest of the dotfiles.
-"$DOTFILES_DIR/install-hunk.sh" || echo "hunk install failed — continuing" >&2
+"$PERSONAL_DOTFILES_DIR/install-hunk.sh" || echo "hunk install failed — continuing" >&2
 
 ####################################################################################################
 ## Install Claude skills ###########################################################################
@@ -44,7 +44,7 @@ echo "Installed claude_statusline.sh to $CLAUDE_DIR/"
 
 SKILLS_DIR="$CLAUDE_DIR/skills"
 mkdir -p "$SKILLS_DIR"
-for skill in "$DOTFILES_DIR/claude-skills"/*/; do
+for skill in "$PERSONAL_DOTFILES_DIR/claude-skills"/*/; do
   [[ -d "$skill" || -L "${skill%/}" ]] || continue
   skill_name=$(basename "$skill")
   cp -RL "$skill" "$SKILLS_DIR/"
