@@ -46,6 +46,14 @@ echo "Installed CLAUDE.md to $CLAUDE_DIR/"
 "$PERSONAL_DOTFILES_DIR/install-hunk.sh" || echo "hunk install failed — continuing" >&2
 
 ####################################################################################################
+## Install fzf #####################################################################################
+####################################################################################################
+
+# Installs/upgrades fzf. dotfiles.sh binds ctrl+r to fzf history search in every
+# interactive shell. Non-fatal: a box without fzf still gets the rest.
+"$PERSONAL_DOTFILES_DIR/install-fzf.sh" || echo "fzf install failed — continuing" >&2
+
+####################################################################################################
 ## Install Claude skills ###########################################################################
 ####################################################################################################
 

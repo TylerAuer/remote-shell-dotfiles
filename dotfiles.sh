@@ -243,6 +243,62 @@ if ! command -v hunk &>/dev/null; then
   fi
 fi
 
+# fzf (fuzzy finder). Only the cheap install path runs here so a fresh shell
+# never blocks on a download — install.sh handles the release tarball.
+if ! command -v fzf &>/dev/null; then
+  if command -v brew &>/dev/null; then
+    echo "Installing fzf"
+    "$PERSONAL_DOTFILES_DIR/install-fzf.sh" --cheap-only
+    hash -r 2>/dev/null
+  else
+    echo "fzf is not installed. Run $PERSONAL_DOTFILES_DIR/install.sh to install it."
+  fi
+fi
+
+####################################################################################################
+## Shell history ###################################################################################
+####################################################################################################
+
+# ctrl+r is only useful when zsh keeps history between sessions. A bare remote
+# box leaves SAVEHIST at 0, so nothing reaches disk. Set the values only when the
+# machine has not set larger ones already.
+if [[ -n "${ZSH_VERSION:-}" ]]; then
+  : "${HISTFILE:=$HOME/.zsh_history}"
+  [[ ${HISTSIZE:-0} -lt 50000 ]] && HISTSIZE=50000
+  [[ ${SAVEHIST:-0} -lt 50000 ]] && SAVEHIST=50000
+  # Write each command as it runs, so a dropped SSH session keeps its history
+  setopt APPEND_HISTORY INC_APPEND_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
+fi
+
+####################################################################################################
+## fzf key bindings ################################################################################
+####################################################################################################
+
+# ctrl+r fuzzy history search, ctrl+t file search, alt+c cd into a subdirectory.
+if command -v fzf &>/dev/null && [[ -o interactive ]]; then
+  export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --ansi"
+  # Keep the full command visible and search it as one string, not as tokens.
+  export FZF_CTRL_R_OPTS="--no-sort --exact --preview 'echo {2..}' --preview-window down:3:wrap"
+
+  if fzf --zsh >/dev/null 2>&1; then
+    # fzf 0.48 and later ship the integration in the binary
+    eval "$(fzf --zsh)"
+  else
+    # Older fzf: find the key-bindings script that the package manager dropped
+    for fzf_keybindings in \
+      "$HOME/.fzf/shell/key-bindings.zsh" \
+      "$(brew --prefix 2>/dev/null)/opt/fzf/shell/key-bindings.zsh" \
+      /usr/share/fzf/key-bindings.zsh \
+      /usr/share/doc/fzf/examples/key-bindings.zsh; do
+      if [[ -f "$fzf_keybindings" ]]; then
+        source "$fzf_keybindings"
+        break
+      fi
+    done
+    unset fzf_keybindings
+  fi
+fi
+
 ####################################################################################################
 ## Aliases #########################################################################################
 ####################################################################################################
