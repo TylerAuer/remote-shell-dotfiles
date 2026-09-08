@@ -54,6 +54,14 @@ echo "Installed CLAUDE.md to $CLAUDE_DIR/"
 "$PERSONAL_DOTFILES_DIR/install-fzf.sh" || echo "fzf install failed — continuing" >&2
 
 ####################################################################################################
+## Install herdr ###################################################################################
+####################################################################################################
+
+# Installs/upgrades herdr — https://herdr.dev. Non-fatal: a box without herdr
+# still gets the rest of the dotfiles.
+"$PERSONAL_DOTFILES_DIR/install-herdr.sh" || echo "herdr install failed — continuing" >&2
+
+####################################################################################################
 ## Install Claude skills ###########################################################################
 ####################################################################################################
 
