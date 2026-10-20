@@ -1,6 +1,6 @@
 ---
 name: clean-up-local
-description: Safely clean up a repo's local state — prune local branches and git worktrees after verifying no work is lost (every branch must be merged into the default branch or pushed to an open PR before deletion). Use when the user wants to clean up, prune, tidy, or delete stale branches and/or worktrees.
+description: Safely clean up a repo's local state — prune local branches and git worktrees (running the repo's worktree teardown so databases do not leak) after verifying no work is lost (every branch must be merged into the default branch or pushed to an open PR before deletion). Use when the user wants to clean up, prune, tidy, or delete stale branches and/or worktrees.
 disable-model-invocation: true
 ---
 
@@ -35,13 +35,19 @@ Delete local branches and worktrees aggressively — including branches whose co
    - Branch checked out in a worktree must have its worktree removed first (step 5).
 
 5. **Clean worktrees**
-   - `git worktree list` → for each non-main worktree that is clean (`git -C <path> status --porcelain` empty) and whose branch is safe: `git worktree remove <path>`.
+   - `git worktree list` → for each non-main worktree that is clean (`git -C <path> status --porcelain` empty) and whose branch is safe: run its teardown (below), then `git worktree remove <path>`.
+   - **Teardown first.** Worktrees can own local resources (databases, containers, ports) that `git worktree remove` leaks. Look for a teardown in the repo docs, `AGENTS.md`/`CLAUDE.md`, and task runners (`Taskfile.yaml`, `Makefile`, `package.json`), e.g. `task worktree-teardown`. Run it from inside the worktree. If it fails, report and do NOT remove that worktree.
    - Dirty worktrees (uncommitted changes): report, do NOT remove.
    - `git worktree prune` to clear stale admin files.
+
+6. **Find orphaned resources** — only when the repo gives worktrees their own resources (step 5).
+   - List the resources (e.g. local databases) and match each one to an existing worktree by the naming rule in the repo docs or the worktree's `.env.local`.
+   - Report each resource that matches no worktree and no other checkout, with its size. Ask before you delete it — a drop is not reversible.
 
 ## Rules
 
 - A branch is safe to delete if every commit is merged into the default branch (incl. squash-merged — verify via PR state or commit-subject match, never `git branch --merged`/`git cherry` alone) OR fully pushed to a remote with a PR (open or merged). An open PR is NOT a reason to keep a fully-pushed branch — delete it. Anything with commits on no remote and not merged is AT RISK — report and ask, never auto-delete.
 - Never delete the default branch or the current branch.
 - Never `git worktree remove` a worktree with uncommitted/untracked changes.
+- Never `git worktree remove` before the repo's worktree teardown, if it has one.
 - Prefer `git branch -d` (safe) over `-D` (force); use `-D` only when status is independently confirmed safe.
