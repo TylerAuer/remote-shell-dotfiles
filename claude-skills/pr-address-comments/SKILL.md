@@ -38,12 +38,12 @@ Classify the comment as one of:
 3. Post a reply using `gh api`:
    ```bash
    gh api repos/{owner}/{repo}/pulls/<PR>/comments/<comment_id>/replies \
-     -f body="(Reply authored by Claude)\n\n<your answer>"
+     -f body="$(printf '(Reply authored by Claude)\n\n%s' "<your answer>")"
    ```
    For general PR comments (not inline):
    ```bash
    gh api repos/{owner}/{repo}/issues/<PR>/comments \
-     -f body="(Reply authored by Claude)\n\n<your answer>"
+     -f body="$(printf '(Reply authored by Claude)\n\n%s' "<your answer>")"
    ```
 
 ### If it's a Request or Instruction
@@ -54,10 +54,9 @@ Classify the comment as one of:
 4. Commit the change:
    ```bash
    git add <specific files>
-   git commit -m "<concise message describing the change>
-
-   Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
+   git commit -m "<concise message describing the change>"
    ```
+   End the message with the commit attribution lines that the session supplies.
 5. Push the branch:
    ```bash
    git push
@@ -69,7 +68,7 @@ Classify the comment as one of:
 7. Reply to the comment with a summary of what was done and a link to the commit:
    ```bash
    gh api repos/{owner}/{repo}/pulls/<PR>/comments/<comment_id>/replies \
-     -f body="(Reply authored by Claude)\n\n<concise summary of change>\n\nCommit: <commit URL>"
+     -f body="$(printf '(Reply authored by Claude)\n\n%s\n\nCommit: %s' "<concise summary of change>" "<commit URL>")"
    ```
    The commit URL format is: `https://github.com/{owner}/{repo}/commit/<SHA>`
 

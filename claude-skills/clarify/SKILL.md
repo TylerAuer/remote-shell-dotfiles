@@ -10,7 +10,7 @@ Resolve all ambiguity before acting. Do not write code, edit files, or run non-i
 ## Rules
 
 1. Use `AskUserQuestion` for every clarification — never ask in plain text.
-2. Batch up to 8 related questions per `AskUserQuestion` call; do not drip one at a time.
+2. Batch up to 4 related questions per `AskUserQuestion` call (the tool limit); do not drip one at a time.
 3. Each question must close a concrete ambiguity (scope, target, format, constraint, success criteria, edge case). Skip questions you can answer yourself by reading the repo.
 4. After each round of answers, list remaining ambiguities. If any remain, ask again. Repeat until none remain.
 5. When fully specified, restate the task in one short paragraph and confirm before proceeding.

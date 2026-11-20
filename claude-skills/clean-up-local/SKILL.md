@@ -19,7 +19,7 @@ Delete local branches and worktrees aggressively — including branches whose co
    - **Merged via PR (covers squash)**: `gh pr list --head <branch> --state all --json number,state,title` → a MERGED/CLOSED PR ⇒ safe.
    - **Squash-merged without a matching PR head** (branch renamed/deleted on remote): match the branch's commit subjects against the default branch log:
      ```
-     for s in "$(git log --format=%s origin/<default>..<branch>)"; do git log origin/<default> --oneline --grep="^${s}\$"; done
+     git log --format=%s origin/<default>..<branch> | while IFS= read -r s; do git log origin/<default> --oneline --fixed-strings --grep="$s"; done
      ```
      Every subject found (typically as `… (#NNN)`) ⇒ squash-merged, safe.
    - **Fully pushed with a PR (open OR merged)** — *delete it*: the work lives on the remote, so a local copy is redundant even while the PR is open. Both must hold:
